@@ -1,0 +1,23 @@
+{%  extends "aeiot/base.html" %}
+
+{% block content %}
+   	         <table class="table table-striped">
+        <thead>
+          <tr><th>name</th><th>semanticics</th><th>version</th><th>supplier</th></tr>
+        </thead>
+        <tbody>
+            {% for algorithm in object_list %}
+            <tr>
+                <td>{{ algorithm.name }}</td>
+                <td>{{ algorithm.semantics }}</td>
+                <td>{{ algorithm.version }}</td>
+                <td>{{ algorithm.supplier }}</td>
+            </tr>
+            {% empty %}
+                <li>No articles yet.</li>
+            {% endfor %}
+        </tbody>
+      </table>
+
+
+{% endblock %}

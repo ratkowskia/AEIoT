@@ -51,7 +51,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'polls',
+    'aeiot',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -96,8 +96,8 @@ if os.getenv('SERVER_SOFTWARE', '').startswith('Google App Engine'):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'HOST': '/cloudsql/<your-project-id>:<your-cloud-sql-instance>',
-            'NAME': '<your-database-name>',
+            'HOST': '/cloudsql/apponear:djtesta',
+            'NAME': 'djtesta',
             'USER': 'root',
         }
     }
@@ -105,10 +105,10 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': '<your-database-name>',
-            'USER': '<your-database-user>',
-            'PASSWORD': '<your-database-password>',
-            'HOST': '<your-database-host>',
+            'NAME': 'djtesta',
+            'USER': 'djtesta',
+            'PASSWORD': 'qwerty45',
+            'HOST': 'localhost',
             'PORT': '3306',
         }
     }
@@ -133,3 +133,4 @@ USE_TZ = True
 
 STATIC_ROOT='static'
 STATIC_URL = '/static/'
+
