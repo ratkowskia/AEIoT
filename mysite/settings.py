@@ -109,7 +109,6 @@ else:
             'NAME': 'djtesta',
             'USER': 'djtesta',
             'PASSWORD': 'qwerty45',
-            #'HOST': '2001:4860:4864:1:36f2:838d:e3ad:e269',
             'HOST': 'localhost',
             'PORT': '3306',
         }
