@@ -2,6 +2,8 @@ from __future__ import unicode_literals
 
 #from django.db import models
 from django.db import models
+from django.core.urlresolvers import reverse
+
 
 #from google.appengine.ext import ndb
 
@@ -57,6 +59,9 @@ class Algorithm(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('aeiot:algorithm-detail', kwargs={'pk': self.pk})
 
 class AlgorithmExecution(models.Model):
     consumer = models.ForeignKey(Consumer)
