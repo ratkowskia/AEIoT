@@ -99,6 +99,7 @@ if os.getenv('SERVER_SOFTWARE', '').startswith('Google App Engine'):
             'HOST': '/cloudsql/apponear:djtesta',
             'NAME': 'djtesta',
             'USER': 'root',
+            'PASSWORD': 'qwerty45',
         }
     }
 else:
@@ -108,6 +109,7 @@ else:
             'NAME': 'djtesta',
             'USER': 'djtesta',
             'PASSWORD': 'qwerty45',
+            #'HOST': '2001:4860:4864:1:36f2:838d:e3ad:e269',
             'HOST': 'localhost',
             'PORT': '3306',
         }
