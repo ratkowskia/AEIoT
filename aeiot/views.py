@@ -14,6 +14,7 @@
 
 from django.http import HttpResponse
 from .models import Choice, Question, Algorithm
+from .forms import AlgorithmDetailsForm
 from django.shortcuts import render,get_object_or_404
 from django.http import Http404, HttpResponseRedirect
 # need to upgrade django to 1.10, workaround instead of upgrade
@@ -38,7 +39,8 @@ class IndexView(generic.ListView):
 class AlgorithmDetailView(generic.UpdateView):
     template_name = 'aeiot/alg_detail.html'
     model = Algorithm
-    fields = ['name', 'semantics', 'source_code', 'version']
+
+    fields = ['name', 'semantics', 'source_code', 'version', 'supplier']
 
 
 class AlgorithmsView(generic.ListView):
