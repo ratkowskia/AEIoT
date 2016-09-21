@@ -51,7 +51,7 @@ class Billing(models.Model):
 class Algorithm(models.Model):
     name = models.CharField(max_length=200)
     semantics = models.CharField(max_length=200)
-    source_code = models.CharField(max_length=200)
+    source_code = models.TextField(max_length=2000)
     version = models.CharField(max_length=200)
     supplier = models.ForeignKey(Supplier)
     input_format = models.ForeignKey(DataFormat, related_name="alg_input_format")
@@ -61,7 +61,7 @@ class Algorithm(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('aeiot:algorithm-detail', kwargs={'pk': self.pk})
+        return reverse('aeiot:algorithm-update', kwargs={'pk': self.pk})
 
 class AlgorithmExecution(models.Model):
     consumer = models.ForeignKey(Consumer)

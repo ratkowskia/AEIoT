@@ -8,7 +8,7 @@
         <tbody>
             {% for algorithm in object_list %}
             <tr>
-                <td><a href="{% url 'aeiot:algorithm-detail' algorithm.id%}">{{ algorithm.name }}</td>
+                <td><a href="{% url 'aeiot:algorithm-update' algorithm.id%}">{{ algorithm.name }}</td>
                 <td>{{ algorithm.semantics }}</td>
                 <td>{{ algorithm.version }}</td>
                 <td>{{ algorithm.supplier }}</td>

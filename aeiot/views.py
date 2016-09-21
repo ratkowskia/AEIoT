@@ -36,11 +36,17 @@ class IndexView(generic.ListView):
         """Return the last five published questions."""
         return Question.objects.order_by('-pub_date')[:5]
 
-class AlgorithmDetailView(generic.UpdateView):
+class AlgorithmUpdate(generic.UpdateView):
     template_name = 'aeiot/alg_detail.html'
     model = Algorithm
 
-    fields = ['name', 'semantics', 'source_code', 'version', 'supplier']
+    fields = ['name', 'semantics', 'source_code', 'version', 'supplier', 'input_format', 'output_format']
+
+class AlgorithmCreate(generic.CreateView):
+    template_name = 'aeiot/alg_detail.html'
+    model = Algorithm
+
+    fields = ['name', 'semantics', 'source_code', 'version', 'supplier', 'input_format', 'output_format']
 
 
 class AlgorithmsView(generic.ListView):
