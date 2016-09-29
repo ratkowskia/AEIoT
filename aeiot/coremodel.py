@@ -3,19 +3,22 @@ from __future__ import unicode_literals
 #from django.db import models
 from django.db import models
 from django.core.urlresolvers import reverse
-
+from django.contrib.auth.models import User
 
 #from google.appengine.ext import ndb
 
 
 class Supplier(models.Model): # todo
     name = models.CharField(max_length=200)
-
+    user_id = models.ForeignKey(User, null=True)
     def __str__(self):
         return self.name
 
 class Consumer(models.Model):  # todo
     name = models.CharField(max_length=200)
+    user_id = models.ForeignKey(User, null=True)
+    def __str__(self):
+        return self.name
 
 
 class DataFormat(models.Model):  # todo

@@ -1,0 +1,50 @@
+{% extends "aeiot/base.html" %}
+{% load bootstrap3 %}
+{% block content %}
+
+{% if form.errors %}
+<p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+{% if next %}
+    {% if user.is_authenticated %}
+    <p>Your account doesn't have access to this page. To proceed,
+    please login with an account that has access.</p>
+    {% else %}
+    <p>Please login to see this page.</p>
+    {% endif %}
+{% endif %}
+
+<!-- <form method="post" action="{% url 'aeiot:login' %}" >
+
+<table>
+<tr>
+    <td>{{ form.username.label_tag }}</td>
+    <td>{{ form.username }}</td>
+</tr>
+<tr>
+    <td>{{ form.password.label_tag }}</td>
+    <td>{{ form.password }}</td>
+</tr>
+</table>
+
+<input type="submit" value="login" />
+<input type="hidden" name="next" value="{% url 'aeiot:index' %}" />
+</form>
+-->
+    <form action="" method="post" class="form">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% buttons %}
+        <button type="submit" class="btn btn-primary">
+            {% bootstrap_icon "star" %} Submit
+        </button>
+    {% endbuttons %}
+    <input type="hidden" name="next" value="{% url 'aeiot:index' %}" />
+
+    </form>
+
+{# Assumes you setup the password_reset view in your URLconf #}
+<p><a href="{% url 'aeiot:password_reset' %}">Lost password?</a></p>
+
+{% endblock %}

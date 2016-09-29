@@ -1,0 +1,8 @@
+0. Tests
+1. User authorization
+ + login
+ + logout
+ - bind django user with AEIOT entities
+2. Algorithms search/directory
+3. API
+4. Algorithm execution

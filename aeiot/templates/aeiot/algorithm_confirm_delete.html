@@ -1,0 +1,20 @@
+{%  extends "aeiot/base.html" %}
+{% load bootstrap3 %}
+{% block content %}
+
+
+
+{# Display a form #}
+
+<form action="" method="post" class="form">
+    {% csrf_token %}
+    <p>Are you sure you want to delete "{{ object }}"?</p>
+
+    {% buttons %}
+        <button type="submit" class="btn btn-primary">
+            {% bootstrap_icon "star" %} Confirm
+        </button>
+    {% endbuttons %}
+</form>
+
+{% endblock %}

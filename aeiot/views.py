@@ -13,14 +13,16 @@
 # limitations under the License.
 
 from django.http import HttpResponse
-from .models import Choice, Question, Algorithm
-from .forms import AlgorithmDetailsForm
+from .models import Choice, Question, Algorithm, Supplier
+from .forms import AlgorithmDetailsForm, ProfileForm
 from django.shortcuts import render,get_object_or_404
 from django.http import Http404, HttpResponseRedirect
 # need to upgrade django to 1.10, workaround instead of upgrade
 #  http://stackoverflow.com/questions/38940996/importerror-no-module-named-urls-while-following-django-tutorial
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.views import generic
+from django.contrib.auth.models import User
+#from django.contrib.auth.models import User
 #from django.views.generic.list import ListView
 
 
@@ -28,13 +30,6 @@ from django.views import generic
 
 
 
-class IndexView(generic.ListView):
-    template_name = 'polls/index.html'
-    context_object_name = 'latest_question_list'
-
-    def get_queryset(self):
-        """Return the last five published questions."""
-        return Question.objects.order_by('-pub_date')[:5]
 
 class AlgorithmUpdate(generic.UpdateView):
     template_name = 'aeiot/alg_detail.html'
@@ -48,42 +43,51 @@ class AlgorithmCreate(generic.CreateView):
 
     fields = ['name', 'semantics', 'source_code', 'version', 'supplier', 'input_format', 'output_format']
 
+class AlgorithmDelete(generic.DeleteView):
+    model = Algorithm
+    success_url = reverse_lazy('aeiot:index')
 
 class AlgorithmsView(generic.ListView):
 
     model = Algorithm
     template_name='aeiot/alg_list.html'
 
+
     def get_context_data(self, **kwargs):
         context = super(AlgorithmsView, self).get_context_data(**kwargs)
         #context['now'] = timezone.now()
         return context
 
-class DetailView(generic.DetailView):
-    model = Question
-    template_name = 'polls/detail.html'
+class ProfileUpdate(generic.FormView):
+    template_name = 'aeiot/profile.html'
+    form_class = ProfileForm
+    success_url = reverse_lazy('aeiot:profile-update')
+    #model = User
+    #fields = ['username', 'first_name', 'last_name', 'email', 'company_name']
+
+    '''def get_object(self, queryset=None):
+        obj = User.objects.get(username=self.request.user)
+        return obj'''
+
+    '''def get_context_data(self, **kwargs):
+        context = super(ProfileUpdate, self).get_context_data(**kwargs)
+        context['form'].base_fields['login'].initial = "test"
+        form = self.get_form(self.get_form_class())
+        form.data['login']="AR"
+
+        return context '''
+    def get_initial(self):
+        user = User.objects.get(username=self.request.user)
+        self.initial['username'] = user.username
+        self.initial['first_name'] = user.first_name
+        self.initial['last_name'] = user.last_name
+        self.initial['email'] = user.email
+        return self.initial
 
 
-class ResultsView(generic.DetailView):
-    model = Question
-    template_name = 'polls/results.html'
-
-
-
-def vote(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    try:
-        selected_choice = question.choice_set.get(pk=request.POST['choice'])
-    except (KeyError, Choice.DoesNotExist):
-        # Redisplay the question voting form.
-        return render(request, 'polls/detail.html', {
-            'question': question,
-            'error_message': "You didn't select a choice.",
-        })
-    else:
-        selected_choice.votes += 1
-        selected_choice.save()
-        # Always return an HttpResponseRedirect after successfully dealing
-        # with POST data. This prevents data from being posted twice if a
-        # user hits the Back button.
-        return HttpResponseRedirect(reverse('aeiot:results', args=(question.id,)))
+    def form_valid(self, form):
+        #form.data
+        user_name = self.request.POST["username"]
+        print(user_name)
+        form.save()
+        return super(ProfileUpdate, self).form_valid(form)
