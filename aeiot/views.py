@@ -22,6 +22,7 @@ from django.http import Http404, HttpResponseRedirect
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.views import generic
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 #from django.contrib.auth.models import User
 #from django.views.generic.list import ListView
 
@@ -82,12 +83,34 @@ class ProfileUpdate(generic.FormView):
         self.initial['first_name'] = user.first_name
         self.initial['last_name'] = user.last_name
         self.initial['email'] = user.email
+        try:
+            self.initial['as_supplier'] = Supplier.objects.get(user_id=user.pk)
+        except ObjectDoesNotExist:
+            self.initial['as_supplier'] = None
         return self.initial
 
 
     def form_valid(self, form):
         #form.data
-        user_name = self.request.POST["username"]
-        print(user_name)
+        user = User.objects.get(username=self.request.user)
+        user.username = self.request.POST["username"]
+        user.first_name = self.request.POST["first_name"]
+        user.last_name = self.request.POST["last_name"]
+        user.email = self.request.POST["email"]
+        supplier_id = self.request.POST["as_supplier"]
+        try:
+            supplier = Supplier.objects.get(user_id=user)
+            supplier.user_id=None
+            supplier.save()
+        except ObjectDoesNotExist:
+            supplier_id = supplier_id
+
+        if supplier_id != "":
+
+            supplier=Supplier.objects.get(pk=int(supplier_id))
+            supplier.user_id=user
+            supplier.save()
+        user.save()
+
         form.save()
         return super(ProfileUpdate, self).form_valid(form)
