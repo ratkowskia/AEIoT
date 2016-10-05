@@ -13,8 +13,10 @@
 # limitations under the License.
 
 from django.http import HttpResponse
+
+from django.utils.datastructures import MultiValueDictKeyError
 from .models import Choice, Question, Algorithm, Supplier
-from .forms import AlgorithmDetailsForm, ProfileForm
+from .forms import AlgorithmDetailsForm, ProfileForm, AlgorithmSearch
 from django.shortcuts import render,get_object_or_404
 from django.http import Http404, HttpResponseRedirect
 # need to upgrade django to 1.10, workaround instead of upgrade
@@ -23,6 +25,7 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.views import generic
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 #from django.contrib.auth.models import User
 #from django.views.generic.list import ListView
 
@@ -35,8 +38,10 @@ from django.core.exceptions import ObjectDoesNotExist
 class AlgorithmUpdate(generic.UpdateView):
     template_name = 'aeiot/alg_detail.html'
     model = Algorithm
+    #form_class = AlgorithmDetailsForm
 
     fields = ['name', 'semantics', 'source_code', 'version', 'supplier', 'input_format', 'output_format']
+
 
 class AlgorithmCreate(generic.CreateView):
     template_name = 'aeiot/alg_detail.html'
@@ -48,10 +53,29 @@ class AlgorithmDelete(generic.DeleteView):
     model = Algorithm
     success_url = reverse_lazy('aeiot:index')
 
-class AlgorithmsView(generic.ListView):
+class AlgorithmsView(generic.FormView, generic.ListView):
 
+    form_class = AlgorithmSearch
     model = Algorithm
     template_name='aeiot/alg_list.html'
+    success_url = reverse_lazy('aeiot:index')
+    search_phrase = 'LR'
+
+    def get_queryset(self):
+        try:
+            search_phrase = self.request.GET['search_phrase']
+        except MultiValueDictKeyError:
+            search_phrase = ''
+
+        if search_phrase != '':
+            queryset = Algorithm.objects.filter(Q(name__icontains=search_phrase) | Q(semantics__icontains=search_phrase)).order_by('-id')[:10:1]
+        else:
+            queryset = Algorithm.objects.all().order_by('-id')[:10:1]
+        return queryset
+
+    #def form_valid(self, form):
+    #    self.search_phrase = self.request.POST['search_phrase']
+    #    return super(AlgorithmsView, self).form_valid(form)
 
 
     def get_context_data(self, **kwargs):
@@ -63,20 +87,8 @@ class ProfileUpdate(generic.FormView):
     template_name = 'aeiot/profile.html'
     form_class = ProfileForm
     success_url = reverse_lazy('aeiot:profile-update')
-    #model = User
-    #fields = ['username', 'first_name', 'last_name', 'email', 'company_name']
 
-    '''def get_object(self, queryset=None):
-        obj = User.objects.get(username=self.request.user)
-        return obj'''
 
-    '''def get_context_data(self, **kwargs):
-        context = super(ProfileUpdate, self).get_context_data(**kwargs)
-        context['form'].base_fields['login'].initial = "test"
-        form = self.get_form(self.get_form_class())
-        form.data['login']="AR"
-
-        return context '''
     def get_initial(self):
         user = User.objects.get(username=self.request.user)
         self.initial['username'] = user.username
@@ -91,12 +103,12 @@ class ProfileUpdate(generic.FormView):
 
 
     def form_valid(self, form):
-        #form.data
         user = User.objects.get(username=self.request.user)
         user.username = self.request.POST["username"]
         user.first_name = self.request.POST["first_name"]
         user.last_name = self.request.POST["last_name"]
         user.email = self.request.POST["email"]
+
         supplier_id = self.request.POST["as_supplier"]
         try:
             supplier = Supplier.objects.get(user_id=user)
@@ -110,6 +122,8 @@ class ProfileUpdate(generic.FormView):
             supplier=Supplier.objects.get(pk=int(supplier_id))
             supplier.user_id=user
             supplier.save()
+
+
         user.save()
 
         form.save()

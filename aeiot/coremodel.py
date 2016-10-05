@@ -54,7 +54,7 @@ class Billing(models.Model):
 class Algorithm(models.Model):
     name = models.CharField(max_length=200)
     semantics = models.CharField(max_length=200)
-    source_code = models.TextField(max_length=2000)
+    source_code = models.TextField(max_length=2000, null=True, blank=True)
     version = models.CharField(max_length=200)
     supplier = models.ForeignKey(Supplier)
     input_format = models.ForeignKey(DataFormat, related_name="alg_input_format")

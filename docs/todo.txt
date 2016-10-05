@@ -1,8 +1,12 @@
 0. Tests
-1. User authorization
++ 1. User authorization
  + login
  + logout
- - bind django user with AEIOT entities
+ + bind django user with AEIOT entities
 2. Algorithms search/directory
+ + algorithm search
+ - algorithm directory
+ - show "My algorithms"
+ - show source code only to algorithm owner
 3. API
 4. Algorithm execution

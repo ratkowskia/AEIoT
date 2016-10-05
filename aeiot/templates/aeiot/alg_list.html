@@ -1,6 +1,18 @@
 {%  extends "aeiot/base.html" %}
+{% load bootstrap3 %}
 
 {% block content %}
+   <form action="" method="GET" class="form">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% buttons %}
+        <button type="submit" class="btn btn-primary">
+            {% bootstrap_icon "search" %} Search
+        </button>
+    {% endbuttons %}
+    </form>
+
+
    	         <table class="table table-striped">
         <thead>
           <tr><th>name</th><th>semanticics</th><th>version</th><th>supplier</th><th>manage</th></tr>
