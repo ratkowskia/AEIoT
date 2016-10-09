@@ -17,7 +17,7 @@ from django.http import HttpResponse
 from django.utils.datastructures import MultiValueDictKeyError
 from .models import Choice, Question, Algorithm, Supplier
 from .forms import AlgorithmDetailsForm, ProfileForm, AlgorithmSearch
-from django.shortcuts import render,get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.http import Http404, HttpResponseRedirect
 # need to upgrade django to 1.10, workaround instead of upgrade
 #  http://stackoverflow.com/questions/38940996/importerror-no-module-named-urls-while-following-django-tutorial
@@ -26,19 +26,16 @@ from django.views import generic
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
-#from django.contrib.auth.models import User
-#from django.views.generic.list import ListView
 
 
-
-
-
+# from django.contrib.auth.models import User
+# from django.views.generic.list import ListView
 
 
 class AlgorithmUpdate(generic.UpdateView):
     template_name = 'aeiot/alg_detail.html'
     model = Algorithm
-    #form_class = AlgorithmDetailsForm
+    # form_class = AlgorithmDetailsForm
 
     fields = ['name', 'semantics', 'source_code', 'version', 'supplier', 'input_format', 'output_format']
 
@@ -49,15 +46,16 @@ class AlgorithmCreate(generic.CreateView):
 
     fields = ['name', 'semantics', 'source_code', 'version', 'supplier', 'input_format', 'output_format']
 
+
 class AlgorithmDelete(generic.DeleteView):
     model = Algorithm
     success_url = reverse_lazy('aeiot:index')
 
-class AlgorithmsView(generic.FormView, generic.ListView):
 
+class AlgorithmsView(generic.FormView, generic.ListView):
     form_class = AlgorithmSearch
     model = Algorithm
-    template_name='aeiot/alg_list.html'
+    template_name = 'aeiot/alg_list.html'
     success_url = reverse_lazy('aeiot:index')
     search_phrase = 'LR'
 
@@ -73,21 +71,21 @@ class AlgorithmsView(generic.FormView, generic.ListView):
             queryset = Algorithm.objects.all().order_by('-id')[:10:1]
         return queryset
 
-    #def form_valid(self, form):
+    # def form_valid(self, form):
     #    self.search_phrase = self.request.POST['search_phrase']
     #    return super(AlgorithmsView, self).form_valid(form)
 
 
     def get_context_data(self, **kwargs):
         context = super(AlgorithmsView, self).get_context_data(**kwargs)
-        #context['now'] = timezone.now()
+        # context['now'] = timezone.now()
         return context
+
 
 class ProfileUpdate(generic.FormView):
     template_name = 'aeiot/profile.html'
     form_class = ProfileForm
     success_url = reverse_lazy('aeiot:profile-update')
-
 
     def get_initial(self):
         user = User.objects.get(username=self.request.user)
@@ -101,7 +99,6 @@ class ProfileUpdate(generic.FormView):
             self.initial['as_supplier'] = None
         return self.initial
 
-
     def form_valid(self, form):
         user = User.objects.get(username=self.request.user)
         user.username = self.request.POST["username"]
@@ -112,17 +109,15 @@ class ProfileUpdate(generic.FormView):
         supplier_id = self.request.POST["as_supplier"]
         try:
             supplier = Supplier.objects.get(user_id=user)
-            supplier.user_id=None
+            supplier.user_id = None
             supplier.save()
         except ObjectDoesNotExist:
             supplier_id = supplier_id
 
         if supplier_id != "":
-
-            supplier=Supplier.objects.get(pk=int(supplier_id))
-            supplier.user_id=user
+            supplier = Supplier.objects.get(pk=int(supplier_id))
+            supplier.user_id = user
             supplier.save()
-
 
         user.save()
 
